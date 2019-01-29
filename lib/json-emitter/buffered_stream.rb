@@ -23,7 +23,7 @@ module JsonEmitter
     # @param io [IO]
     #
     def write(io)
-      each { |str|
+      buffer.each { |str|
         io << str
       }
     end
@@ -52,9 +52,10 @@ module JsonEmitter
           buff << str
           if buff.bytesize >= @buffer_size
             y << buff
-            buff
+            buff = ""
           end
         }
+        y << buff unless buff.empty?
       }
     end
   end
