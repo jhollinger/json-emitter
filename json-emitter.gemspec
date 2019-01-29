@@ -4,8 +4,8 @@ Gem::Specification.new do |s|
   s.name = 'json-emitter'
   s.version = JsonEmitter::VERSION
   s.licenses = ['MIT']
-  s.summary = 'TODO'
-  s.description = 'TODO'
+  s.summary = 'Efficiently generate tons of JSON'
+  s.description = 'Generates and outputs JSON in well-sized chunks'
   s.date = '2019-01-29'
   s.authors = ['Jordan Hollinger']
   s.email = 'jordan.hollinger@gmail.com'
