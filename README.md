@@ -8,6 +8,10 @@ JsonEmitter works for any reasonable use case and then some. Use JsonEmitter in 
 
 JsonEmitter uses the `multi_json` gem which uses the fastest available JSON serializer on your system (e.g `oj`). If you haven't installed any specifically, Ruby's built-in JSON library is used.
 
+TODO array example
+
+TODO object example
+
 ### HTTP Chunked Transfer (a.k.a streaming)
 
 In HTTP 1.0 the entire response is normally sent all at once. Usually this is fine, but it can cause problems when very large responses must be generated and sent. These problems usually manifest as spikes in memory usage and/or responses that take so long to send that the client (or an in-between proxy) times out the request.
