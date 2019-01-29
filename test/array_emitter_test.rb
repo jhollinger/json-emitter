@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'date'
 
 class ArrayEmitterTest < Minitest::Test
   def test_simple_array

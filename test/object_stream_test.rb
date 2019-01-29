@@ -37,7 +37,7 @@ class ObjectTest < Minitest::Test
   end
 
   def test_buffered_each
-    stream = JsonEmitter.object(@hash).buffered(4)
+    stream = JsonEmitter.object(@hash).buffered(4, unit: :bytes)
     output = stream.reduce([]) do |a, str|
       a << str
     end

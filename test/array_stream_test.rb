@@ -86,7 +86,7 @@ class StreamTest < Minitest::Test
   end
 
   def test_buffered_write
-    stream = JsonEmitter.array(@enum).buffered(4)
+    stream = JsonEmitter.array(@enum).buffered(4, unit: :bytes)
     io = StringIO.new
     stream.write io
     io.rewind
@@ -95,7 +95,7 @@ class StreamTest < Minitest::Test
 
   def test_buffered_each_with_block
     output = []
-    stream = JsonEmitter.array(@enum).buffered(4)
+    stream = JsonEmitter.array(@enum).buffered(4, unit: :bytes)
     stream.each do |str|
       output << str
     end
@@ -113,7 +113,7 @@ class StreamTest < Minitest::Test
   end
 
   def test_buffered_each_without_block
-    stream = JsonEmitter.array(@enum).buffered(4)
+    stream = JsonEmitter.array(@enum).buffered(4, unit: :bytes)
     output = stream.reduce([]) do |a, str|
       a << str
     end

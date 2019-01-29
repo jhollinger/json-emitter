@@ -22,8 +22,8 @@ module JsonEmitter
     # @param buffer_size [Integer] The buffer size in kb. This is a size *hint*, not a hard limit.
     # @return [JsonEmitter::BufferedStream]
     #
-    def buffered(buffer_size = 16)
-      BufferedStream.new(@enum, buffer_size)
+    def buffered(buffer_size = 16, unit: :kb)
+      BufferedStream.new(@enum, buffer_size, unit: unit)
     end
 
     #

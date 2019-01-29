@@ -11,10 +11,16 @@ module JsonEmitter
     #
     # @param enum [Enumerator] An enumerator that yields pieces of JSON.
     # @param buffer_size [Integer] The buffer size in kb. This is a size *hint*, not a hard limit.
+    # @param unit [Symbol] :bytes | :kb (default) | :mb
     #
-    def initialize(enum, buffer_size)
+    def initialize(enum, buffer_size, unit: :kb)
       @enum = enum
-      @buffer_size = buffer_size
+      @buffer_size = case unit
+                     when :bytes then buffer_size
+                     when :kb then buffer_size * 1024
+                     when :mb then buffer_size * 1024 * 1024
+                     else raise ArgumentError, "unknown buffer size unit ':#{unit}'"
+                     end
     end
 
     #
