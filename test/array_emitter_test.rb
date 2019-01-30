@@ -15,7 +15,7 @@ class ArrayEmitterTest < Minitest::Test
       y << Date.new(2019, 1, 29)
     }
 
-    emitter = JsonEmitter::Emitter.new.array(enum)
+    stream = JsonEmitter::Emitter.new.array(enum)
     assert_equal %w(
       [
         1
@@ -38,7 +38,7 @@ class ArrayEmitterTest < Minitest::Test
         ,
         "2019-01-29"
       ]
-    ), emitter.reduce([]) { |a, str| a << str }
+    ), stream.reduce([]) { |a, str| a << str }
   end
 
   def test_mapped_array
@@ -48,7 +48,7 @@ class ArrayEmitterTest < Minitest::Test
       y << 3
     }
 
-    emitter = JsonEmitter::Emitter.new.array(enum) { |n|
+    stream = JsonEmitter::Emitter.new.array(enum) { |n|
       n * 2
     }
     assert_equal %w(
@@ -59,7 +59,7 @@ class ArrayEmitterTest < Minitest::Test
         ,
         6
       ]
-    ), emitter.reduce([]) { |a, str| a << str }
+    ), stream.reduce([]) { |a, str| a << str }
   end
 
   def test_nested_arrays
@@ -79,7 +79,7 @@ class ArrayEmitterTest < Minitest::Test
       y << 2
     }
 
-    emitter = JsonEmitter::Emitter.new.array(enum)
+    stream = JsonEmitter::Emitter.new.array(enum)
     assert_equal %w(
     [
       1
@@ -108,6 +108,6 @@ class ArrayEmitterTest < Minitest::Test
       ,
       2
     ]
-    ), emitter.reduce([]) { |a, str| a << str }
+    ), stream.reduce([]) { |a, str| a << str }
   end
 end

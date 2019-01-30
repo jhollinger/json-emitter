@@ -16,6 +16,13 @@ require 'json-emitter/buffered_stream'
 # buffered. This works very well with so-called "HTTP chunked responses" in Rack/Rails/Sinatra/Grape/etc.
 #
 module JsonEmitter
+  class << self
+    attr_reader :wrappers
+    attr_reader :error_handlers
+  end
+  @wrappers = []
+  @error_handlers = []
+
   #
   # Generates an stream that will output a JSON array. The input can be any Enumerable, such as an Array or an Enumerator.
   #
@@ -96,5 +103,17 @@ module JsonEmitter
   def self.object(hash)
     emitter = Emitter.new.object(hash)
     Stream.new(emitter)
+  end
+
+  # Wrap the enumeration in a Proc. It will be passed a callback which it must call to continue.
+  # TODO better docs and examples.
+  def self.wrap(&wrapper)
+    @wrappers.unshift wrapper
+  end
+
+  # Add an error handler.
+  # TODO better docs and examples.
+  def self.error(&handler)
+    @error_handlers << handler
   end
 end
