@@ -19,7 +19,7 @@ class ObjectTest < Minitest::Test
 
   def test_each
     stream = JsonEmitter.object(@hash)
-    output = stream.reduce([]) do |a, str|
+    output = stream.unbuffered.reduce([]) do |a, str|
       a << str
     end
     assert_equal %w(
@@ -37,7 +37,7 @@ class ObjectTest < Minitest::Test
   end
 
   def test_buffered_each
-    stream = JsonEmitter.object(@hash).buffered(4, unit: :bytes)
+    stream = JsonEmitter.object(@hash, buffer_size: 4, buffer_unit: :bytes)
     output = stream.reduce([]) do |a, str|
       a << str
     end

@@ -26,7 +26,7 @@ class StreamTest < Minitest::Test
 
   def test_each_with_block
     output = []
-    stream = JsonEmitter.array(@enum)
+    stream = JsonEmitter.array(@enum).unbuffered
     stream.each do |str|
       output << str
     end
@@ -56,7 +56,7 @@ class StreamTest < Minitest::Test
   end
 
   def test_each_without_block
-    stream = JsonEmitter.array(@enum)
+    stream = JsonEmitter.array(@enum).unbuffered
     output = stream.reduce([]) do |a, str|
       a << str
     end
@@ -86,7 +86,7 @@ class StreamTest < Minitest::Test
   end
 
   def test_buffered_write
-    stream = JsonEmitter.array(@enum).buffered(4, unit: :bytes)
+    stream = JsonEmitter.array(@enum, buffer_size: 4, buffer_unit: :bytes)
     io = StringIO.new
     stream.write io
     io.rewind
@@ -95,7 +95,7 @@ class StreamTest < Minitest::Test
 
   def test_buffered_each_with_block
     output = []
-    stream = JsonEmitter.array(@enum).buffered(4, unit: :bytes)
+    stream = JsonEmitter.array(@enum, buffer_size: 4, buffer_unit: :bytes)
     stream.each do |str|
       output << str
     end
@@ -113,7 +113,7 @@ class StreamTest < Minitest::Test
   end
 
   def test_buffered_each_without_block
-    stream = JsonEmitter.array(@enum).buffered(4, unit: :bytes)
+    stream = JsonEmitter.array(@enum, buffer_size: 4, buffer_unit: :bytes)
     output = stream.reduce([]) do |a, str|
       a << str
     end

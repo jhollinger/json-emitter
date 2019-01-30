@@ -12,8 +12,8 @@ require 'json-emitter/buffered_stream'
 # Primitive values will be serialized to JSON using MultiJson.dump. MultiJson finds and uses the most efficient
 # JSON generator you have on your system (e.g. oj) and falls back to the stdlib JSON library.
 #
-# The emitter can be used to output to anything (files, network sockets, etc), and the output can optionally be
-# buffered. This works very well with so-called "HTTP chunked responses" in Rack/Rails/Sinatra/Grape/etc.
+# The emitter can be used to output to anything (files, network sockets, etc). It works very well with so-called
+# "HTTP chunked responses" in Rack/Rails/Sinatra/Grape/etc.
 #
 module JsonEmitter
   class << self
@@ -47,17 +47,15 @@ module JsonEmitter
   #     # do something with each json chunk
   #   end
   #
-  #   # if you need the outputted chunks to be (roughly) equal in size, call "buffered"
-  #   # and pass in the buffer size in kb.
-  #   buffered_stream = stream.buffered(16)
-  #
   # @param enum [Enumerable] Something that can be enumerated over, like an Array or Enumerator. Each element should be something that can be rendered as JSON (e.g. a number, string, boolean, Array, or Hash).
+  # @param buffer_size [Integer] The buffer size in kb. This is a size *hint*, not a hard limit.
+  # @param unit [Symbol] :bytes | :kb (default) | :mb
   # @yield If a block is given, it will be yielded each value in the array. The return value from the block will be converted to JSON instead of the original value.
-  # @return [JsonEmitter::Stream]
+  # @return [JsonEmitter::BufferedStream]
   #
-  def self.array(enum, &mapper)
+  def self.array(enum, buffer_size: 16, buffer_unit: :kb, &mapper)
     emitter = Emitter.new.array(enum, &mapper)
-    Stream.new(emitter)
+    BufferedStream.new(emitter, buffer_size, unit: buffer_unit)
   end
 
   #
@@ -93,16 +91,14 @@ module JsonEmitter
   #     # do something with each json chunk
   #   end
   #
-  #   # if you need the outputted chunks to be (roughly) equal in size, call "buffered"
-  #   # and pass in the buffer size in kb.
-  #   buffered_stream = stream.buffered(16)
-  #
   # @param hash [Hash] Keys should be Strings or Symbols and values should be any JSON-compatible value like a number, string, boolean, Array, or Hash.
-  # @return [JsonEmitter::Stream]
+  # @param buffer_size [Integer] The buffer size in kb. This is a size *hint*, not a hard limit.
+  # @param unit [Symbol] :bytes | :kb (default) | :mb
+  # @return [JsonEmitter::BufferedStream]
   #
-  def self.object(hash)
+  def self.object(hash, buffer_size: 16, buffer_unit: :kb)
     emitter = Emitter.new.object(hash)
-    Stream.new(emitter)
+    BufferedStream.new(emitter, buffer_size, unit: buffer_unit)
   end
 
   # Wrap the enumeration in a Proc. It will be passed a callback which it must call to continue.

@@ -50,11 +50,6 @@ File.open("/tmp/foo.json", "w+") { |file|
 stream.each { |json_chunk|
   ...
 }
-
-# this will buffer the JSON into roughly 8k chunks
-stream.buffered(8).each { |json_8k_chunk|
-  ...
-}
 ```
 
 # HTTP Chunked Transfer (a.k.a streaming)
@@ -90,7 +85,7 @@ get :orders do
 
   stream JsonEmitter.array(enumerator) { |order|
     ApiV1::Entities::Order.new(order)
-  }.buffered(16)
+  }
 end
 ```
 
@@ -104,7 +99,7 @@ app = ->(env) {
 
   stream = JsonEmitter.array(enumerator) { |order|
     order.to_h
-  }.buffered(16)
+  }
 
   [200, {"Content-Type" => "application/json"}, stream]
 }

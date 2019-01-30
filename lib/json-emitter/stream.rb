@@ -1,7 +1,7 @@
 module JsonEmitter
   #
   # Represents a stream of JSON to be generated and yielded. It can be treated like any Enumerable.
-  # The size of the yielded strings can vary from 1 to 1000's. If that's a problem, call JsonEmitter::Stream.buffer.
+  # Unlike UnbufferedStream, the size of the yielded strings can vary from 1 to 1000's.
   #
   class Stream
     include Enumerable
@@ -13,17 +13,6 @@ module JsonEmitter
     #
     def initialize(enum)
       @enum = enum
-    end
-
-    #
-    # Returns a new stream that will buffer the output. You can perform the same "write" or "each" operations
-    # on the new stream, but the chunks of output will be (roughly) uniform in size.
-    #
-    # @param buffer_size [Integer] The buffer size in kb. This is a size *hint*, not a hard limit.
-    # @return [JsonEmitter::BufferedStream]
-    #
-    def buffered(buffer_size = 16, unit: :kb)
-      BufferedStream.new(@enum, buffer_size, unit: unit)
     end
 
     #

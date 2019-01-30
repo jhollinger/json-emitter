@@ -24,6 +24,15 @@ module JsonEmitter
     end
 
     #
+    # Returns an unbuffered version of the stream.
+    #
+    # @return [JsonEmitter::Stream]
+    #
+    def unbuffered
+      Stream.new(@enum)
+    end
+
+    #
     # Write the stream to the specified IO object.
     #
     # @param io [IO]
