@@ -4,7 +4,7 @@ JsonEmitter is a library for efficiently generating very large bits of JSON in R
 
 Use JsonEmitter in your Rack/Rails/Sinatra/Grape API to stream large JSON responses without worrying about RAM or HTTP timeouts. Use it to write large JSON objects to your filesystem, S3, or ~~a 3D printer~~ anywhere else!
 
-**Stream a JSON array from ActiveRecord**
+**Stream a JSON array any Enumerable**
 
 ```ruby
 order_query = Order.limit(10_000).find_each(batch_size: 500)
@@ -69,7 +69,22 @@ The following examples all show the same streaming API in various Rack-based fra
 
 ## Rails
 
-TODO
+```ruby
+class OrdersController < ApplicationController
+  def index
+    enumerator = Order.
+      where("created_at >= ?", 1.year.ago).
+      find_each(batch_size: 500)
+
+    headers["Last-Modified"] = Time.now.ctime.to_s
+    headers["Content-Type"] = "application/json"
+
+    self.response_body = JsonEmitter.array(enumerator) { |order|
+      order.to_h
+    }
+  end
+end
+```
 
 ## Sinatra
 
