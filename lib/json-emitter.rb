@@ -1,6 +1,7 @@
 require 'multi_json'
 
 require 'json-emitter/version'
+require 'json-emitter/context'
 require 'json-emitter/emitter'
 require 'json-emitter/stream'
 require 'json-emitter/buffered_stream'

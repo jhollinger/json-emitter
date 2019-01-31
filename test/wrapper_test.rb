@@ -4,7 +4,7 @@ class WrapperTest < Minitest::Test
   def test_one_wrap
     log = []
     emitter = JsonEmitter::Emitter.new
-    emitter.wrap do
+    emitter.context.wrap do
       ->(next_wrapper) {
         log << "Before"
         x = next_wrapper.call
@@ -39,7 +39,7 @@ class WrapperTest < Minitest::Test
   def test_two_wraps
     log = []
     emitter = JsonEmitter::Emitter.new
-    emitter.wrap do
+    emitter.context.wrap do
       ->(next_wrapper) {
         log << "Before (outer)"
         x = next_wrapper.call
@@ -49,7 +49,7 @@ class WrapperTest < Minitest::Test
       }
     end
 
-    emitter.wrap do 
+    emitter.context.wrap do 
       ->(next_wrapper) {
         log << "Before (inner)"
         x = next_wrapper.call
@@ -88,7 +88,7 @@ class WrapperTest < Minitest::Test
     log, errors = [], []
 
     emitter = JsonEmitter::Emitter.new
-    emitter.error do |e|
+    emitter.context.error do |e|
       errors << e.message
     end
 
@@ -116,7 +116,7 @@ class WrapperTest < Minitest::Test
     log, errors = [], []
 
     emitter = JsonEmitter::Emitter.new
-    emitter.error do |e|
+    emitter.context.error do |e|
       errors << e.message
     end
 
