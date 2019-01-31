@@ -21,8 +21,8 @@ enumerator = Order.
 ```ruby
 class OrdersController < ApplicationController
   def index
-    headers["Last-Modified"] = Time.now.ctime.to_s
     headers["Content-Type"] = "application/json"
+    headers["Last-Modified"] = Time.now.ctime.to_s
     self.response_body = JsonEmitter.array(enumerator) { |order|
       order.to_h
     }
