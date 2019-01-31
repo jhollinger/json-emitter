@@ -84,7 +84,7 @@ class WrapperTest < Minitest::Test
     ], log
   end
 
-  def test_error_handler
+  def test_handles_error_in_enumerator
     log, errors = [], []
 
     emitter = JsonEmitter::Emitter.new
@@ -103,7 +103,35 @@ class WrapperTest < Minitest::Test
       log << n
       n
     }
-      
+
+    begin
+      stream.reduce { |a, n| a + n }
+    rescue
+    end
+    assert_equal [1, 2], log
+    assert_equal ["Can't do 3"], errors
+  end
+
+  def test_handles_error_in_mapper
+    log, errors = [], []
+
+    emitter = JsonEmitter::Emitter.new
+    emitter.error do |e|
+      errors << e.message
+    end
+
+    enum = Enumerator.new { |y|
+      y << 1
+      y << 2
+      y << 3
+    }
+
+    stream = emitter.array(enum) { |n|
+      raise "Can't do 3" if n == 3
+      log << n
+      n
+    }
+
     begin
       stream.reduce { |a, n| a + n }
     rescue
