@@ -24,7 +24,7 @@ module JsonEmitter
   @error_handlers = []
 
   #
-  # Generates an stream that will output a JSON array. The input can be any Enumerable, such as an Array or an Enumerator.
+  # Generates a stream that will output a JSON array. The input can be any Enumerable, such as an Array or an Enumerator.
   #
   # The following example uses minumum memory to genrate a very large JSON array string from an ActiveRecord query.
   # Only 500 Order records will ever by in memory at once. The JSON will be generated in small chunks so that
@@ -49,7 +49,7 @@ module JsonEmitter
   #
   # @param enum [Enumerable] Something that can be enumerated over, like an Array or Enumerator. Each element should be something that can be rendered as JSON (e.g. a number, string, boolean, Array, or Hash).
   # @param buffer_size [Integer] The buffer size in kb. This is a size *hint*, not a hard limit.
-  # @param unit [Symbol] :bytes | :kb (default) | :mb
+  # @param buffer_unit [Symbol] :bytes | :kb (default) | :mb
   # @yield If a block is given, it will be yielded each value in the array. The return value from the block will be converted to JSON instead of the original value.
   # @return [JsonEmitter::BufferedStream]
   #
@@ -59,7 +59,7 @@ module JsonEmitter
   end
 
   #
-  # Generates an stream that will output a JSON object.
+  # Generates a stream that will output a JSON object.
   #
   # If some of the values will be large arrays, use Enumerators or lazy Enumerators to build each element on demand
   # (to potentially save lots of RAM).
@@ -93,7 +93,7 @@ module JsonEmitter
   #
   # @param hash [Hash] Keys should be Strings or Symbols and values should be any JSON-compatible value like a number, string, boolean, Array, or Hash.
   # @param buffer_size [Integer] The buffer size in kb. This is a size *hint*, not a hard limit.
-  # @param unit [Symbol] :bytes | :kb (default) | :mb
+  # @param buffer_unit [Symbol] :bytes | :kb (default) | :mb
   # @return [JsonEmitter::BufferedStream]
   #
   def self.object(hash, buffer_size: 16, buffer_unit: :kb)
