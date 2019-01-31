@@ -16,7 +16,7 @@ enumerator = Order.
   find_each(batch_size: 500)
 ```
 
-**Rails (HTTP chunked response)**
+**Rails**
 
 ```ruby
 class OrdersController < ApplicationController
@@ -30,7 +30,7 @@ class OrdersController < ApplicationController
 end
 ```
 
-**Sinatra (HTTP chunked response)**
+**Sinatra**
 
 ```ruby
 get "/orders" do
@@ -41,7 +41,7 @@ get "/orders" do
 end
 ```
 
-**Grape (HTTP chunked response)**
+**Grape**
 
 ```ruby
 get :orders do
@@ -51,7 +51,7 @@ get :orders do
 end
 ```
 
-**Rack (HTTP chunked response)**
+**Rack**
 
 ```ruby
 app = ->(env) {
