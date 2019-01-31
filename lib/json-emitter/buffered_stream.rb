@@ -66,8 +66,8 @@ module JsonEmitter
         @enum.each { |str|
           buff << str
           if buff.bytesize >= @buffer_size
-            y << buff
-            buff = ""
+            y << buff.clone
+            buff.clear
           end
         }
         y << buff unless buff.empty?
