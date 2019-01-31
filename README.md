@@ -72,12 +72,12 @@ The following examples all show the same streaming API in various Rack-based fra
 ```ruby
 class OrdersController < ApplicationController
   def index
+    headers["Last-Modified"] = Time.now.ctime.to_s
+    headers["Content-Type"] = "application/json"
+
     enumerator = Order.
       where("created_at >= ?", 1.year.ago).
       find_each(batch_size: 500)
-
-    headers["Last-Modified"] = Time.now.ctime.to_s
-    headers["Content-Type"] = "application/json"
 
     self.response_body = JsonEmitter.array(enumerator) { |order|
       order.to_h
@@ -88,7 +88,19 @@ end
 
 ## Sinatra
 
-TODO
+```ruby
+get "/orders" do
+  content_type :json
+
+  enumerator = Order.
+    where("created_at >= ?", 1.year.ago).
+    find_each(batch_size: 500)
+
+  JsonEmitter.array(enumerator) { |order|
+    order.to_h
+  }
+end
+```
 
 ## Grape
 
