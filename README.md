@@ -97,3 +97,11 @@ File.open("~/out.json", "w+") { |f|
   JsonEmitter.array(enumerator).write f
 }
 ```
+
+# License
+
+MIT License. See LICENSE for details.
+
+# Copyright
+
+Copywrite (c) 2019 Jordan Hollinger.
