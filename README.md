@@ -70,7 +70,7 @@ JsonEmitter.array(enumerator).each { |json_chunk|
 }
 ```
 
-`JsonEmitter.object` takes a `Hash` and returns a stream that generates chunks of JSON. Hash values can be literals, Enumerators, Enumerables, or Procs.
+`JsonEmitter.object` takes a `Hash` and returns a stream that generates chunks of JSON. Hash values can be literals, Enumerators, Arrays, other Hashes, or Procs that return any of those. Hashes and arrays may be nested.
 
 ```ruby
 JsonEmitter.object({
