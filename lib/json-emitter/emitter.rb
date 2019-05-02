@@ -1,4 +1,6 @@
 module JsonEmitter
+  COMMA = ",".freeze
+
   #
   # Builds Enumerators that yield JSON from Ruby Arrays or Hashes.
   #
@@ -51,7 +53,7 @@ module JsonEmitter
 
         first = true
         enum.each { |val|
-          y << ",".freeze unless first
+          y << COMMA unless first
           first = false if first
 
           mapped_val = mapper ? mapper.call(val) : val
@@ -70,7 +72,7 @@ module JsonEmitter
 
         first = true
         hash.each { |key, val|
-          y << ",".freeze unless first
+          y << COMMA unless first
           first = false if first
 
           json_key = MultiJson.dump(key.to_s)
