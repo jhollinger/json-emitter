@@ -164,4 +164,29 @@ class WrapperTest < Minitest::Test
 
     assert_equal ["Can't do 3"], errors
   end
+
+  def test_handles_errors_with_context
+    errors = []
+    emitter = JsonEmitter::Emitter.new(rack_env: {"PATH_INFO" => "/api/v1/widgets"})
+    emitter.context.error do |e, ctx|
+      errors << "#{e.message} - #{ctx.request.path}"
+    end
+
+    enum = Enumerator.new { |y|
+      y << 1
+      y << 2
+      y << 3
+    }
+
+    i = 0
+    begin
+      emitter.array(enum).each { |chunk|
+        i += 1
+        raise "Can't do 3"
+      }
+    rescue
+    end
+
+    assert_equal ["Can't do 3 - /api/v1/widgets"], errors
+  end
 end

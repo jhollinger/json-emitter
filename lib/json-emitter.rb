@@ -51,11 +51,12 @@ module JsonEmitter
   # @param enum [Enumerable] Something that can be enumerated over, like an Array or Enumerator. Each element should be something that can be rendered as JSON (e.g. a number, string, boolean, Array, or Hash).
   # @param buffer_size [Integer] The buffer size in kb. This is a size *hint*, not a hard limit.
   # @param buffer_unit [Symbol] :bytes | :kb (default) | :mb
+  # @param rack [Hash] optional Rack env for error handling
   # @yield If a block is given, it will be yielded each value in the array. The return value from the block will be converted to JSON instead of the original value.
   # @return [JsonEmitter::BufferedStream]
   #
-  def self.array(enum, buffer_size: 16, buffer_unit: :kb, &mapper)
-    emitter = Emitter.new.array(enum, &mapper)
+  def self.array(enum, buffer_size: 16, buffer_unit: :kb, rack: nil, &mapper)
+    emitter = Emitter.new(rack_env: rack).array(enum, &mapper)
     BufferedStream.new(emitter, buffer_size, unit: buffer_unit)
   end
 
@@ -95,10 +96,11 @@ module JsonEmitter
   # @param hash [Hash] Keys should be Strings or Symbols and values should be any JSON-compatible value like a number, string, boolean, Array, or Hash.
   # @param buffer_size [Integer] The buffer size in kb. This is a size *hint*, not a hard limit.
   # @param buffer_unit [Symbol] :bytes | :kb (default) | :mb
+  # @param rack [Hash] optional Rack env for error handling
   # @return [JsonEmitter::BufferedStream]
   #
-  def self.object(hash, buffer_size: 16, buffer_unit: :kb)
-    emitter = Emitter.new.object(hash)
+  def self.object(hash, buffer_size: 16, buffer_unit: :kb, rack: nil)
+    emitter = Emitter.new(rack_env: rack).object(hash)
     BufferedStream.new(emitter, buffer_size, unit: buffer_unit)
   end
 

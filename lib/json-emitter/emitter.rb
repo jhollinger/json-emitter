@@ -8,8 +8,8 @@ module JsonEmitter
     # @return [JsonEmitter::Context]
     attr_reader :context
 
-    def initialize
-      @context = Context.new
+    def initialize(rack_env: nil)
+      @context = Context.new(rack_env: rack_env)
     end
 
     #

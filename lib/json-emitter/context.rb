@@ -8,7 +8,11 @@ module JsonEmitter
   # and JsonEmitter.error to add critical behavior back in.
   #
   class Context
-    def initialize
+    # @return [Hash] The Rack environment Hash (if present)
+    attr_reader :rack_env
+
+    def initialize(rack_env: nil)
+      @rack_env = rack_env
       @wrappers = JsonEmitter.wrappers.map(&:call).compact
       @error_handlers = JsonEmitter.error_handlers
       @pass_through_errors = []
@@ -29,6 +33,13 @@ module JsonEmitter
       @error_handlers += [handler]
     end
 
+    # Returns a Rack::Request from rack_env (if rack_env was given).
+    def request
+      if rack_env
+        @request ||= Rack::Request.new(rack_env)
+      end
+    end
+
     # Execute a block within this context.
     def execute(&inner)
       @wrappers.reduce(inner) { |f, outer_wrapper|
@@ -38,7 +49,7 @@ module JsonEmitter
     rescue *@pass_through_errors => e
       raise e
     rescue => e
-      @error_handlers.each { |h| h.call(e) }
+      @error_handlers.each { |h| h.call(e, self) }
       raise e
     end
   end
