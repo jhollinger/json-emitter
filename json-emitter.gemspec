@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.licenses = ['MIT']
   s.summary = 'Efficiently generate tons of JSON'
   s.description = 'Generates and outputs JSON in well-sized chunks'
-  s.date = '2019-01-31'
+  s.date = '2020-04-29'
   s.authors = ['Jordan Hollinger']
   s.email = 'jordan.hollinger@gmail.com'
   s.homepage = 'https://jhollinger.github.io/json-emitter/'
