@@ -98,6 +98,37 @@ File.open("~/out.json", "w+") { |f|
 }
 ```
 
+# Deailing with errors
+
+When streaming an HTTP response, you can't change the response code once you start sending data. So if you hit an error after you start, you need another way to communicate errors to the client.
+
+One way is to always steam an object that includes an `errors` field. Any errors will be collected while the `Enumerator` is running. After it's finished, they'll be added to the JSON object.
+
+```ruby
+  def get_data
+    errors = []
+    enum = Enumerator.new { |y|
+      finished = false
+      until finished
+        data, errs, finished = get_data_chunk
+        if errs
+          errors += errs
+          finished = true
+          next
+        end
+        data.each { x| y << x }
+      end
+    }
+    return enum, -> { errors }
+  end
+  
+  items_enum, errors_proc = get_data
+  JsonEmitter.object({
+    items: items_enum,
+    errors: errors_proc,
+  })
+```
+
 # License
 
 MIT License. See LICENSE for details.
