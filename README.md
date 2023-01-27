@@ -108,25 +108,7 @@ JsonEmitter.error do |ex, context|
 end
 ```
 
-# Non-HTTP uses
-
-`JsonEmitter.array` takes an `Enumerable` and returns a stream that generates chunks of JSON.
-
-```ruby
-JsonEmitter.array(enumerator).each { |json_chunk|
-  # write json_chunk somewhere
-}
-```
-
-Streams have a `#write` method for writing directly to a `File` or `IO` object.
-
-```ruby
-File.open("~/out.json", "w+") { |f|
-  JsonEmitter.array(enumerator).write f
-}
-```
-
-# Deailing with errors
+## Returning errors
 
 When streaming an HTTP response, you can't change the response code once you start sending data. So if you hit an error after you start, you need another way to communicate errors to the client.
 
@@ -155,6 +137,24 @@ One way is to always steam an object that includes an `errors` field. Any errors
     items: items_enum,
     errors: errors_proc,
   })
+```
+
+# Non-HTTP uses
+
+`JsonEmitter.array` takes an `Enumerable` and returns a stream that generates chunks of JSON.
+
+```ruby
+JsonEmitter.array(enumerator).each { |json_chunk|
+  # write json_chunk somewhere
+}
+```
+
+Streams have a `#write` method for writing directly to a `File` or `IO` object.
+
+```ruby
+File.open("~/out.json", "w+") { |f|
+  JsonEmitter.array(enumerator).write f
+}
 ```
 
 # License
