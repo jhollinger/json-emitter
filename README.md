@@ -21,7 +21,7 @@ class OrdersController < ApplicationController
   def index
     headers["Content-Type"] = "application/json"
     headers["Last-Modified"] = Time.now.ctime.to_s
-    self.response_body = JsonEmitter.array(enumerator) { |order|
+    self.response_body = JsonEmitter.array(enumerator, rack: env) { |order|
       order.to_h
     }
   end
@@ -33,7 +33,7 @@ end
 ```ruby
 get "/orders" do
   content_type :json
-  JsonEmitter.array(enumerator) { |order|
+  JsonEmitter.array(enumerator, rack: env) { |order|
     order.to_h
   }
 end
@@ -43,7 +43,7 @@ end
 
 ```ruby
 get :orders do
-  stream JsonEmitter.array(enumerator) { |order|
+  stream JsonEmitter.array(enumerator, rack: env) { |order|
     ApiV1::Entities::Order.new(order)
   }
 end
@@ -53,39 +53,67 @@ end
 
 ```ruby
 app = ->(env) {
-  stream = JsonEmitter.array(enumerator) { |order|
+  stream = JsonEmitter.array(enumerator, rack: env) { |order|
     order.to_h
   }
   [200, {"Content-Type" => "application/json"}, stream]
 }
 ```
 
-# Other uses
+## Sending objects
 
-`JsonEmitter.array` takes an `Enumerable` and returns a stream that generates chunks of JSON.
-
-```ruby
-JsonEmitter.array(enumerator).each { |json_chunk|
-  # write json_chunk somewhere
-}
-```
-
-`JsonEmitter.object` takes a `Hash` and returns a stream that generates chunks of JSON. Hash values can be literals, Enumerators, Arrays, other Hashes, or Procs that return any of those. Hashes and arrays may be nested.
+You may also stream Hashes as JSON objects. Keys must be Strings or Symbols, but values may be anything: literals, Enumerators, Arrays, other Hashes, or Procs that return any of those.
 
 ```ruby
 JsonEmitter.object({
   orders: Order.find_each.lazy.map { |order|
     {id: order.id, desc: order.description}
   },
+  big_text: ->() { load_tons_of_text },
+}, rack: env)
+```
 
-  big_text_1: ->() {
-    load_tons_of_text
-  },
+## Rack middleware won't work!
 
-  big_text_2: ->() {
-    load_tons_of_text
-  },
-}).each { |json_chunk|
+**IMPORTANT** Your Rack middleware will be *finished* by the time your JSON is built! So if you're depending on middleware to set `Time.zone`, report exceptions, etc. it won't work here. Fortunately, you can use `JsonEmitter.wrap` and `JsonEmitter.error` as replacements.
+
+Put these somewhere like `config/initializers/json_emitter.rb`.
+
+### JsonEmitter.wrap
+
+```ruby
+JsonEmitter.wrap do
+  # Get TZ at the call site
+  current_tz = Time.zone
+  
+  # Return a Proc that restores the call site's TZ before building the JSON
+  ->(app) {
+    default_tz = Time.zone
+    Time.zone = current_tz
+    res = app.call
+    Time.zone = default_tz
+    res
+  }
+end
+```
+
+### JsonEmitter.error
+
+```ruby
+JsonEmitter.error do |ex, context|
+  Airbrake.notify(ex, {
+    request_path: context.request&.path,
+    query_string: context.request&.query_string,
+  })
+end
+```
+
+# Non-HTTP uses
+
+`JsonEmitter.array` takes an `Enumerable` and returns a stream that generates chunks of JSON.
+
+```ruby
+JsonEmitter.array(enumerator).each { |json_chunk|
   # write json_chunk somewhere
 }
 ```
