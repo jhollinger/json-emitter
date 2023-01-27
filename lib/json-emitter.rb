@@ -104,14 +104,41 @@ module JsonEmitter
     BufferedStream.new(emitter, buffer_size, unit: buffer_unit)
   end
 
-  # Wrap the enumeration in a Proc. It will be passed a callback which it must call to continue.
-  # TODO better docs and examples.
+  #
+  # Wrap the enumeration in a block. It will be passed a callback which it must call to continue.
+  # Define your wrappers somewhere like config/initializers/json_emitter.rb.
+  #
+  # JsonEmitter.wrap do
+  #   # Get TZ at the call site
+  #   current_tz = Time.zone
+  #
+  #   # Return a Proc that restores the call site's TZ before building the JSON
+  #   ->(app) {
+  #     default_tz = Time.zone
+  #     Time.zone = current_tz
+  #     res = app.call
+  #     Time.zone = default_tz
+  #     res
+  #   }
+  # end
+  #
   def self.wrap(&wrapper)
     @wrappers.unshift wrapper
   end
 
-  # Add an error handler.
-  # TODO better docs and examples.
+  #
+  # Add an error handler. If the callsite is in a Rack app, the context will have a
+  # Rack::Request in context.request.
+  #
+  # Define your error handlers somewhere like config/initializers/json_emitter.rb.
+  #
+  # JsonEmitter.error do |ex, context|
+  #   Airbrake.notify(ex, {
+  #     request_path: context.request&.path,
+  #     query_string: context.request&.query_string,
+  #   })
+  # end
+  #
   def self.error(&handler)
     @error_handlers << handler
   end
