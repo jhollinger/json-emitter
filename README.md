@@ -82,6 +82,11 @@ Put these somewhere like `config/initializers/json_emitter.rb`.
 ### JsonEmitter.wrap
 
 ```ruby
+# Ensure that ActiveRecord connections are returned to the connection pool
+JsonEmitter.wrap do
+  ->(app) { ActiveRecord::Base.with_connection(&app.call) }
+end
+
 JsonEmitter.wrap do
   # Get TZ at the call site
   current_tz = Time.zone
