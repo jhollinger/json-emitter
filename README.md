@@ -1,5 +1,7 @@
 # JsonEmitter [![Build Status](https://travis-ci.org/jhollinger/json-emitter.svg?branch=master)](https://travis-ci.org/jhollinger/json-emitter)
 
+*NOTE this project may appear inactive, but that's just because it's **done** (I think). Enjoy!*
+
 JsonEmitter is a library for efficiently generating very large bits of JSON in Ruby. Need to generate a JSON array of 10,000 database records without eating up all your RAM? No problem! Objects? Nested structures? JsonEmitter has you covered.
 
 Use JsonEmitter in your Rack/Rails/Sinatra/Grape API to stream large JSON responses without worrying (much) about RAM or HTTP timeouts. Use it to write large JSON objects to your filesystem, S3, or ~~a 3D printer~~ anywhere else!
