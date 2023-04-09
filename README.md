@@ -54,12 +54,14 @@ end
 **Rack**
 
 ```ruby
-app = ->(env) {
-  stream = JsonEmitter.array(enumerator, rack: env) { |order|
-    order.to_h
+map "/orders" do
+  run ->(env) {
+    stream = JsonEmitter.array(enumerator, rack: env) { |order|
+      order.to_h
+    }
+    [200, {"Content-Type" => "application/json"}, stream]
   }
-  [200, {"Content-Type" => "application/json"}, stream]
-}
+end
 ```
 
 ## Sending objects
