@@ -1,4 +1,4 @@
-# JsonEmitter [![Build Status](https://travis-ci.org/jhollinger/json-emitter.svg?branch=master)](https://travis-ci.org/jhollinger/json-emitter)
+# JsonEmitter
 
 *NOTE this project may appear inactive, but that's just because it's **done** (I think). Enjoy!*
 
