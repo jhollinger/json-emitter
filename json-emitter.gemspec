@@ -6,12 +6,11 @@ Gem::Specification.new do |s|
   s.licenses = ['MIT']
   s.summary = 'Efficiently generate tons of JSON'
   s.description = 'Generates and outputs JSON in well-sized chunks'
-  s.date = '2022-07-31'
   s.authors = ['Jordan Hollinger']
   s.email = 'jordan.hollinger@gmail.com'
   s.homepage = 'https://jhollinger.github.io/json-emitter/'
   s.require_paths = ['lib']
   s.files = [Dir.glob('lib/**/*'), 'README.md'].flatten
-  s.required_ruby_version = '>= 2.3.0'
+  s.required_ruby_version = '>= 3.1.0'
   s.add_runtime_dependency 'multi_json', '~> 1.0'
 end

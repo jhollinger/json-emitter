@@ -62,12 +62,12 @@ module JsonEmitter
 
     def buffer
       Enumerator.new { |y|
-        buff = ""
+        buff = +""
         @enum.each { |str|
           buff << str
           if buff.bytesize >= @buffer_size
             y << buff
-            buff = ""
+            buff = +""
           end
         }
         y << buff unless buff.empty?
